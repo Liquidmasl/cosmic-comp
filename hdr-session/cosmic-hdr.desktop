@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=COSMIC (HDR)
+Comment=COSMIC with the experimental HDR compositor from /opt/cosmic-hdr
+Exec=/opt/cosmic-hdr/bin/start-cosmic-hdr
+Type=Application
+DesktopNames=COSMIC

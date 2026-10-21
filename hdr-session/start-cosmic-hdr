@@ -1,0 +1,8 @@
+#!/bin/sh
+# COSMIC session using the HDR cosmic-comp build from /opt/cosmic-hdr.
+# cosmic-session spawns "cosmic-comp" via PATH, so prepending our bin dir is
+# enough; everything else is the distribution's stock session. PATH is set
+# inside the login shell because start-cosmic re-execs "$SHELL -l".
+[ -r /opt/cosmic-hdr/env ] && . /opt/cosmic-hdr/env
+export COSMIC_HDR_OUTPUT
+exec "${SHELL:-/bin/sh}" -l -c 'PATH=/opt/cosmic-hdr/bin:$PATH exec /usr/bin/start-cosmic --in-login-shell'
