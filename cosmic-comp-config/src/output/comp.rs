@@ -51,6 +51,17 @@ pub struct OutputConfig {
     pub max_bpc: Option<u32>,
     #[serde(default)]
     pub xwayland_primary: bool,
+    /// Enables the experimental HDR10 output path for this connector.
+    ///
+    /// This remains opt-in and is also gated by `COSMIC_HDR_EXPERIMENT=1` in
+    /// the compositor so an existing output configuration cannot
+    /// accidentally enable unfinished HDR support.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hdr_enabled: Option<bool>,
+    /// Luminance assigned to SDR white when compositing into the HDR output
+    /// space, in cd/m². Defaults to 203 cd/m² (ITU-R BT.2408).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hdr_reference_white: Option<u16>,
 }
 
 impl Default for OutputConfig {
@@ -64,6 +75,8 @@ impl Default for OutputConfig {
             enabled: OutputState::Enabled,
             max_bpc: None,
             xwayland_primary: false,
+            hdr_enabled: None,
+            hdr_reference_white: None,
         }
     }
 }

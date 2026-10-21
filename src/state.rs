@@ -74,6 +74,10 @@ use smithay::{
     wayland::{
         alpha_modifier::AlphaModifierState,
         background_effect::BackgroundEffectState,
+        color::management::{
+            ColorManagementState, Feature as ColorFeature, Primaries as ColorPrimaries,
+            RenderIntent as ColorRenderIntent, TransferFunction as ColorTransferFunction,
+        },
         compositor::{CompositorClientState, CompositorState, SurfaceData},
         cursor_shape::CursorShapeManagerState,
         dmabuf::{DmabufFeedback, DmabufGlobal, DmabufState},
@@ -107,6 +111,7 @@ use smithay::{
         shm::ShmState,
         single_pixel_buffer::SinglePixelBufferState,
         tablet_manager::TabletManagerState,
+        tearing_control::TearingControlState,
         text_input::TextInputManagerState,
         viewporter::ViewporterState,
         virtual_keyboard::VirtualKeyboardManagerState,
@@ -275,6 +280,7 @@ pub struct Common {
 
     // wayland state
     pub compositor_state: CompositorState,
+    pub color_management_state: ColorManagementState,
     pub corner_radius_state: CornerRadiusState,
     pub data_device_state: DataDeviceState,
     pub dmabuf_state: DmabufState,
@@ -667,6 +673,15 @@ impl State {
         let clock = Clock::new();
         let config = Config::load(&handle);
         let compositor_state = CompositorState::new::<Self>(dh);
+        let advertise_hdr = crate::utils::env::hdr_policy().experiment_enabled;
+        let color_management_state = ColorManagementState::new::<Self, _>(
+            dh,
+            [ColorTransferFunction::St2084Pq],
+            [ColorPrimaries::Bt2020],
+            [ColorFeature::WindowsScrgb, ColorFeature::WindowsBt2100],
+            [ColorRenderIntent::Perceptual],
+            move |_| advertise_hdr,
+        );
         let corner_radius_state = CornerRadiusState::new::<Self>(dh);
         let data_device_state = DataDeviceState::new::<Self>(dh);
         let dmabuf_state = DmabufState::new();
@@ -709,6 +724,7 @@ impl State {
         TextInputManagerState::new::<Self>(dh);
         VirtualKeyboardManagerState::new::<State, _>(dh, client_not_sandboxed);
         AlphaModifierState::new::<Self>(dh);
+        TearingControlState::new::<Self>(dh);
         SinglePixelBufferState::new::<Self>(dh);
         FixesState::new::<Self>(dh);
         let keyboard_layout_state = KeyboardLayoutState::new::<State, _>(dh, client_not_sandboxed);
@@ -787,6 +803,7 @@ impl State {
                 theme: cosmic::theme::system_preference(),
 
                 compositor_state,
+                color_management_state,
                 corner_radius_state,
                 data_device_state,
                 dmabuf_state,

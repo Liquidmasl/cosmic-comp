@@ -525,6 +525,7 @@ dependencies = [
  "async-task",
  "bitflags 2.11.0",
  "futures-core",
+ "nix 0.31.2",
  "polling",
  "rustix 1.1.4",
  "slab",
@@ -811,6 +812,7 @@ dependencies = [
  "libsystemd",
  "log-panics",
  "logind-zbus",
+ "nix 0.31.2",
  "ordered-float",
  "parking_lot",
  "png 0.18.1",
@@ -3015,7 +3017,7 @@ dependencies = [
  "hmac",
  "libc",
  "log",
- "nix",
+ "nix 0.29.0",
  "nom",
  "once_cell",
  "serde",
@@ -3379,6 +3381,18 @@ dependencies = [
  "cfg_aliases",
  "libc",
  "memoffset",
+]
+
+[[package]]
+name = "nix"
+version = "0.31.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d6d0705320c1e6ba1d912b5e37cf18071b6c2e9b7fa8215a1e8a7651966f5d3"
+dependencies = [
+ "bitflags 2.11.0",
+ "cfg-if",
+ "cfg_aliases",
+ "libc",
 ]
 
 [[package]]
@@ -4791,7 +4805,6 @@ checksum = "8ed6a63f02c8539c91a8685a86f4099661ba3da017932f6ebbea6de3f0fa7c90"
 [[package]]
 name = "smithay"
 version = "0.7.0"
-source = "git+https://github.com/smithay/smithay.git?rev=e3d461a#e3d461a057ba244d213a8498ec372b0799cca103"
 dependencies = [
  "aliasable",
  "appendlist",
@@ -4831,12 +4844,14 @@ dependencies = [
  "tracing",
  "tracy-client",
  "udev",
+ "wayland-backend",
  "wayland-client",
  "wayland-cursor",
  "wayland-egl",
  "wayland-protocols",
  "wayland-protocols-misc",
  "wayland-protocols-wlr",
+ "wayland-scanner",
  "wayland-server",
  "winit",
  "x11rb",

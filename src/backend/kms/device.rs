@@ -7,7 +7,10 @@ use crate::{
     },
     config::{CompTransformDef, EdidProduct, ScreenFilter},
     shell::Shell,
-    utils::{env::dev_list_var, prelude::*},
+    utils::{
+        env::dev_list_var,
+        prelude::*,
+    },
     wayland::handlers::image_copy_capture::PendingImageCopyData,
 };
 
