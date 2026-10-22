@@ -114,16 +114,11 @@ pub fn push_render_elements_from_surface_tree<R>(
                                 radii,
                                 blur_strength,
                             );
-                            let elem: SurfaceRenderElement<R> = if radii.iter().any(|r| *r != 0)
-                                && should_clip
-                                && ClippedSurfaceRenderElement::will_clip(
-                                    &element, scale, geometry, radii,
-                                ) {
-                                ClippedSurfaceRenderElement::new(
-                                    renderer, element, scale, geometry, radii,
-                                )
-                                .into()
-                            } else if pq_bt2020_content {
+                            // HDR content is checked before corner clipping: the clip
+                            // shader has no PQ/scRGB handling, so a clipped HDR surface
+                            // would be decoded as sRGB (crushed darks, harsh edges).
+                            // Until it does, HDR windows keep square corners.
+                            let elem: SurfaceRenderElement<R> = if pq_bt2020_content {
                                 HdrSurfaceRenderElement::new(
                                     element,
                                     description
@@ -136,6 +131,16 @@ pub fn push_render_elements_from_surface_tree<R>(
                                 HdrSurfaceRenderElement::new_scrgb(
                                     element,
                                     scrgb_reference_scale(&description),
+                                )
+                                .into()
+                            } else if radii.iter().any(|r| *r != 0)
+                                && should_clip
+                                && ClippedSurfaceRenderElement::will_clip(
+                                    &element, scale, geometry, radii,
+                                )
+                            {
+                                ClippedSurfaceRenderElement::new(
+                                    renderer, element, scale, geometry, radii,
                                 )
                                 .into()
                             } else {
